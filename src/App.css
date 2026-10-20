@@ -1,0 +1,22 @@
+/* Clean application custom transitions */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+@media (max-width: 640px) {
+  .glass-panel {
+    padding: 1.5rem !important;
+  }
+  
+  .option-btn {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
