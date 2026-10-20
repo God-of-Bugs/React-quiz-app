@@ -5,8 +5,8 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 ---
 
 ## 🚀 Live Demo & Repository
-- **Live Demo (GitHub Pages):** [https://god-of-bugs.github.io/task-4-react-quiz-app/](https://god-of-bugs.github.io/React-quiz-app/)
-- **GitHub Repository:** [https://github.com/God-of-Bugs/task-4-react-quiz-app](https://github.com/God-of-Bugs/React-quiz-app)
+- **Live Demo (GitHub Pages):** [https://god-of-bugs.github.io/React-quiz-app/](https://god-of-bugs.github.io/React-quiz-app/)
+- **GitHub Repository:** [https://github.com/God-of-Bugs/React-quiz-app](https://github.com/God-of-Bugs/React-quiz-app)
 
 ---
 
@@ -26,7 +26,7 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 - **Performance Evaluation:**
   - Final score calculation (`X / Y` correct) and accuracy percentage.
   - Tier classification: **Master Engineer**, **Proficient Developer**, or **Needs Review**.
-  - Multi-stream celebratory confetti burst (`canvas-confetti`) when scoring $\ge 70\%$.
+  - Multi-stream celebratory confetti burst (`canvas-confetti`) when scoring ≥ 70%.
   - Comprehensive question review with category and difficulty tags.
 
 ---
@@ -44,8 +44,8 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 ## 💻 Local Development
 
 ```bash
-git clone https://github.com/God-of-Bugs/task-4-react-quiz-app.git
-cd task-4-react-quiz-app
+git clone https://github.com/God-of-Bugs/React-quiz-app.git
+cd task-4-quiz-app
 npm install
 npm run dev
 ```
