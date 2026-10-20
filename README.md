@@ -5,8 +5,8 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 ---
 
 ## 🚀 Live Demo & Repository
-- **Live Demo (GitHub Pages):** [https://god-of-bugs.github.io/task-4-react-quiz-app/](https://god-of-bugs.github.io/task-4-react-quiz-app/)
-- **GitHub Repository:** [https://github.com/God-of-Bugs/task-4-react-quiz-app](https://github.com/God-of-Bugs/task-4-react-quiz-app)
+- **Live Demo (GitHub Pages):** [https://god-of-bugs.github.io/task-4-react-quiz-app/](https://god-of-bugs.github.io/React-quiz-app/)
+- **GitHub Repository:** [https://github.com/God-of-Bugs/task-4-react-quiz-app](https://github.com/God-of-Bugs/React-quiz-app)
 
 ---
 
