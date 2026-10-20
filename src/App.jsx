@@ -1,14 +1,51 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import ProgressBar from './components/ProgressBar';
 import QuizCard from './components/QuizCard';
 import ScoreScreen from './components/ScoreScreen';
 import { quizQuestions } from './data/quizData';
-import { ShieldCheck, Sparkles, Code2 } from 'lucide-react';
+import { Sparkles, Code2, Shuffle, Layers, ShieldCheck } from 'lucide-react';
+
+/**
+ * Robust Fisher-Yates shuffle that permutes both questions
+ * and options while accurately maintaining the correct answer index.
+ */
+function prepareShuffledQuiz(questionsList) {
+  const cloned = questionsList.map((q) => {
+    // Pair each option with its original index
+    const indexedOptions = q.options.map((opt, idx) => ({
+      opt,
+      isCorrect: idx === q.correctAnswer,
+    }));
+
+    // Shuffle options
+    for (let i = indexedOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indexedOptions[i], indexedOptions[j]] = [indexedOptions[j], indexedOptions[i]];
+    }
+
+    const newCorrectAnswer = indexedOptions.findIndex((item) => item.isCorrect);
+
+    return {
+      ...q,
+      options: indexedOptions.map((item) => item.opt),
+      correctAnswer: newCorrectAnswer,
+    };
+  });
+
+  // Shuffle question order
+  for (let i = cloned.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+  }
+
+  return cloned;
+}
 
 export default function App() {
-  const [questions] = useState(quizQuestions);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all'); // 'all' | 'easy' | 'medium' | 'hard'
+  const [activeQuestions, setActiveQuestions] = useState(() => prepareShuffledQuiz(quizQuestions));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -16,8 +53,33 @@ export default function App() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [userAnswersHistory, setUserAnswersHistory] = useState([]);
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const totalQuestions = questions.length;
+  // Filter and shuffle questions whenever difficulty changes or reset is called
+  const initQuizForDifficulty = useCallback((difficulty) => {
+    let pool = quizQuestions;
+    if (difficulty !== 'all') {
+      pool = quizQuestions.filter((q) => q.difficulty === difficulty);
+    }
+    const shuffled = prepareShuffledQuiz(pool);
+    setActiveQuestions(shuffled);
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setScore(0);
+    setQuizCompleted(false);
+    setUserAnswersHistory([]);
+  }, []);
+
+  const handleDifficultyChange = (difficulty) => {
+    setSelectedDifficulty(difficulty);
+    initQuizForDifficulty(difficulty);
+  };
+
+  const handleShuffleCurrent = () => {
+    initQuizForDifficulty(selectedDifficulty);
+  };
+
+  const currentQuestion = activeQuestions[currentQuestionIndex];
+  const totalQuestions = activeQuestions.length;
 
   const handleSelectOption = useCallback((optionIndex) => {
     if (isAnswered) return;
@@ -50,19 +112,12 @@ export default function App() {
   }, [isAnswered, currentQuestionIndex, totalQuestions]);
 
   const handleRestartQuiz = useCallback(() => {
-    // Optionally re-shuffle questions or reset order
-    setCurrentQuestionIndex(0);
-    setSelectedOption(null);
-    setIsAnswered(false);
-    setScore(0);
-    setQuizCompleted(false);
-    setUserAnswersHistory([]);
-  }, []);
+    initQuizForDifficulty(selectedDifficulty);
+  }, [initQuizForDifficulty, selectedDifficulty]);
 
-  // Keyboard shortcut listener
+  // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Don't trigger if focus is inside an input/textarea
       if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
 
       if (!quizCompleted) {
@@ -87,12 +142,25 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [quizCompleted, isAnswered, handleSelectOption, handleNextQuestion, handleRestartQuiz]);
 
+  const difficultyStats = useMemo(() => {
+    const easyCount = quizQuestions.filter((q) => q.difficulty === 'easy').length;
+    const mediumCount = quizQuestions.filter((q) => q.difficulty === 'medium').length;
+    const hardCount = quizQuestions.filter((q) => q.difficulty === 'hard').length;
+    return {
+      all: quizQuestions.length,
+      easy: easyCount,
+      medium: mediumCount,
+      hard: hardCount,
+    };
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {/* Top Navigation */}
+      {/* Top Clean Navigation */}
       <Navbar
         score={score}
         currentCategory={!quizCompleted ? currentQuestion?.category : 'Completed'}
+        currentDifficulty={!quizCompleted ? currentQuestion?.difficulty : null}
         totalQuestions={totalQuestions}
         onReset={handleRestartQuiz}
       />
@@ -106,11 +174,69 @@ export default function App() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '2rem 1.25rem',
-          maxWidth: '860px',
+          maxWidth: '880px',
           margin: '0 auto',
           width: '100%',
         }}
       >
+        {/* Difficulty Controls & Shuffler (Shown when in-quiz) */}
+        {!quizCompleted && (
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '1.25rem',
+              flexWrap: 'wrap',
+              gap: '0.75rem',
+            }}
+          >
+            {/* Difficulty Tabs */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.78rem', color: '#6b7280', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <Layers size={14} />
+                Difficulty:
+              </span>
+              <button
+                className={`filter-btn ${selectedDifficulty === 'all' ? 'active' : ''}`}
+                onClick={() => handleDifficultyChange('all')}
+              >
+                All ({difficultyStats.all})
+              </button>
+              <button
+                className={`filter-btn ${selectedDifficulty === 'easy' ? 'active' : ''}`}
+                onClick={() => handleDifficultyChange('easy')}
+              >
+                Easy ({difficultyStats.easy})
+              </button>
+              <button
+                className={`filter-btn ${selectedDifficulty === 'medium' ? 'active' : ''}`}
+                onClick={() => handleDifficultyChange('medium')}
+              >
+                Medium ({difficultyStats.medium})
+              </button>
+              <button
+                className={`filter-btn ${selectedDifficulty === 'hard' ? 'active' : ''}`}
+                onClick={() => handleDifficultyChange('hard')}
+              >
+                Hard ({difficultyStats.hard})
+              </button>
+            </div>
+
+            {/* Quick Shuffle Button */}
+            <button
+              onClick={handleShuffleCurrent}
+              className="filter-btn"
+              title="Reshuffle questions and choices"
+              style={{ padding: '0.4rem 0.75rem' }}
+            >
+              <Shuffle size={13} color="#38bdf8" />
+              <span>Shuffle</span>
+            </button>
+          </div>
+        )}
+
         {!quizCompleted ? (
           <div style={{ width: '100%' }}>
             {/* Top Progress Bar */}
@@ -120,27 +246,29 @@ export default function App() {
             />
 
             {/* Interactive Question Card */}
-            <QuizCard
-              questionData={currentQuestion}
-              selectedOption={selectedOption}
-              isAnswered={isAnswered}
-              onSelectOption={handleSelectOption}
-              onNextQuestion={handleNextQuestion}
-              isLastQuestion={currentQuestionIndex === totalQuestions - 1}
-            />
+            {currentQuestion && (
+              <QuizCard
+                questionData={currentQuestion}
+                selectedOption={selectedOption}
+                isAnswered={isAnswered}
+                onSelectOption={handleSelectOption}
+                onNextQuestion={handleNextQuestion}
+                isLastQuestion={currentQuestionIndex === totalQuestions - 1}
+              />
+            )}
           </div>
         ) : (
           <ScoreScreen
             score={score}
             totalQuestions={totalQuestions}
             userAnswersHistory={userAnswersHistory}
-            questions={questions}
+            questions={activeQuestions}
             onRestart={handleRestartQuiz}
           />
         )}
       </main>
 
-      {/* Modern Footer */}
+      {/* Modern Developer Footer */}
       <footer
         style={{
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
@@ -154,7 +282,7 @@ export default function App() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
             <Code2 size={14} color="#38bdf8" />
-            Built with React 19 & Vite
+            DevSprint
           </span>
           <span>•</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -164,7 +292,7 @@ export default function App() {
           <span>•</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
             <ShieldCheck size={14} color="#10b981" />
-            Verified Task-4 Implementation
+            React 19 & Vite 8
           </span>
         </div>
       </footer>

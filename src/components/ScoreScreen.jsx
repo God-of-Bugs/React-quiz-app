@@ -74,6 +74,32 @@ export default function ScoreScreen({ score, totalQuestions, userAnswersHistory,
     };
   };
 
+  const getCategoryClass = (cat) => {
+    switch (cat) {
+      case 'JavaScript':
+        return 'badge-js';
+      case 'React':
+        return 'badge-react';
+      case 'Core CS':
+        return 'badge-cs';
+      default:
+        return 'badge-react';
+    }
+  };
+
+  const getDifficultyClass = (diff) => {
+    switch (diff?.toLowerCase()) {
+      case 'easy':
+        return 'badge-easy';
+      case 'medium':
+        return 'badge-medium';
+      case 'hard':
+        return 'badge-hard';
+      default:
+        return 'badge-easy';
+    }
+  };
+
   const tier = getTierInfo();
 
   return (
@@ -259,9 +285,16 @@ export default function ScoreScreen({ score, totalQuestions, userAnswersHistory,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
                       <span style={{ fontWeight: 700, color: '#9ca3af', fontSize: '0.85rem' }}>Q{idx + 1}.</span>
-                      <span className="badge badge-js" style={{ fontSize: '0.7rem' }}>{q.category}</span>
+                      <span className={`badge ${getCategoryClass(q.category)}`} style={{ fontSize: '0.68rem', padding: '0.15rem 0.5rem' }}>
+                        {q.category}
+                      </span>
+                      {q.difficulty && (
+                        <span className={`badge ${getDifficultyClass(q.difficulty)}`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.45rem' }}>
+                          {q.difficulty.toUpperCase()}
+                        </span>
+                      )}
                     </div>
 
                     <div

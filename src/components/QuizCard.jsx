@@ -9,7 +9,7 @@ export default function QuizCard({
   onNextQuestion,
   isLastQuestion,
 }) {
-  const { question, options, correctAnswer, explanation, category, codeSnippet } = questionData;
+  const { question, options, correctAnswer, explanation, category, difficulty, codeSnippet } = questionData;
   const optionLetters = ['A', 'B', 'C', 'D'];
 
   const getOptionStateClass = (index) => {
@@ -41,6 +41,19 @@ export default function QuizCard({
     }
   };
 
+  const getDifficultyClass = (diff) => {
+    switch (diff?.toLowerCase()) {
+      case 'easy':
+        return 'badge-easy';
+      case 'medium':
+        return 'badge-medium';
+      case 'hard':
+        return 'badge-hard';
+      default:
+        return 'badge-easy';
+    }
+  };
+
   return (
     <div className="glass-panel animate-fade-in" style={{ borderRadius: '1.25rem', padding: '2rem', width: '100%' }}>
       {/* Category & Topic Header */}
@@ -54,9 +67,16 @@ export default function QuizCard({
           gap: '0.5rem',
         }}
       >
-        <span className={`badge ${getCategoryClass(category)}`}>
-          {category}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span className={`badge ${getCategoryClass(category)}`}>
+            {category}
+          </span>
+          {difficulty && (
+            <span className={`badge ${getDifficultyClass(difficulty)}`}>
+              {difficulty.toUpperCase()}
+            </span>
+          )}
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#9ca3af', fontSize: '0.8rem' }}>
           <HelpCircle size={14} />
           <span>Single Choice</span>

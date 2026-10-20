@@ -1,6 +1,6 @@
-# Task-4 Modern React Quiz Application (CS & Web Fundamentals)
+# DevSprint | Web & Systems Quiz
 
-A fast, responsive, and aesthetically polished interactive quiz application built with **React 19**, **Vite**, and **Modern CSS**. Test and reinforce your engineering knowledge across JavaScript internals, React architecture, and Core Computer Science fundamentals.
+A fast, responsive, and aesthetically polished interactive quiz application built with **React 19**, **Vite**, and **Modern CSS**. Test and benchmark your engineering knowledge across JavaScript internals, React architecture, and Core Computer Science fundamentals.
 
 ---
 
@@ -12,24 +12,22 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 
 ## 🌟 Key Features
 
-- **Curated Question Bank**: High-impact questions spanning JavaScript (event loop, closures), React (reconciliation, keys, useEffect cleanup, state immutability), and Core CS (hash table complexity, deadlock conditions, TCP handshake).
-- **Interactive Option States**: Clear visual feedback with distinct color coding:
-  - Default glassmorphic cards
-  - Selected state highlight
-  - Emerald Green (`#10b981`) for correct answers
-  - Rose Red (`#f43f5e`) for incorrect choices
-- **Instant Conceptual Explanations**: Immediately unlocks detailed engineering insights upon selecting an answer, locking remaining options to ensure assessment integrity.
-- **Dynamic Progress Tracking**: Animated progress bar displaying current step, total questions, and percentage completion.
-- **Keyboard Shortcuts**:
-  - `[1]`, `[2]`, `[3]`, `[4]` to pick corresponding options A–D
+- **Categorized Difficulty Tiers (24 Questions):**
+  - **Easy (8 Questions):** Core JS primitives, array methods, foundational React (`useState`, props, JSX conventions), FIFO queues, and binary representation.
+  - **Medium (8 Questions):** React lifecycle (`useEffect`, key props, dependency arrays), JS closures, Promises & error handling, Hash Table complexity, and Call Stack vs Task Queue.
+  - **Hard (8 Questions):** Event Loop microtasks vs macrotasks, React Fiber architecture & reconciliation, Coffman deadlock conditions, TCP 3-way handshake, memory leak patterns, and `useCallback` vs `useMemo`.
+- **Dynamic Shuffling & Replayability:** Fisher-Yates algorithmic shuffling permutes question order and option choices while keeping answer keys strictly synchronized.
+- **Interactive Option States:** Distinct visual feedback with glassmorphic cards, emerald green (`#10b981`) for correct answers, and rose red (`#f43f5e`) for incorrect answers.
+- **Immediate Concept Insights:** Unlocks technical explanations upon answering and locks other options to prevent multiple submissions.
+- **Keyboard Shortcuts:**
+  - `[1]`, `[2]`, `[3]`, `[4]` to pick options A–D
   - `[Enter]` to proceed to the next question or view results
-  - `[Enter]` on the score screen to restart the assessment
-- **Score & Performance Analysis**:
-  - Final score calculation (`X / Y` correct) with percentage badge.
-  - Performance tier classification: **Master Engineer**, **Proficient Developer**, or **Needs Review**.
-  - Celebratory multi-directional confetti blast using `canvas-confetti` when scoring ≥ 70%.
-- **Interactive Review Mode**: Expandable accordion detailing each question, the user's selected response, the correct choice, and deep-dive technical explanations.
-- **Glassmorphism & Responsive UI**: Centered dark-mode aesthetics with subtle neon glow effects, mobile-responsive layout, and clean typography.
+  - `[Enter]` on the score screen to restart the quiz
+- **Performance Evaluation:**
+  - Final score calculation (`X / Y` correct) and accuracy percentage.
+  - Tier classification: **Master Engineer**, **Proficient Developer**, or **Needs Review**.
+  - Multi-stream celebratory confetti burst (`canvas-confetti`) when scoring $\ge 70\%$.
+  - Comprehensive question review with category and difficulty tags.
 
 ---
 
@@ -45,34 +43,25 @@ A fast, responsive, and aesthetically polished interactive quiz application buil
 
 ## 💻 Local Development
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/God-of-Bugs/task-4-react-quiz-app.git
-   cd task-4-react-quiz-app
-   ```
+```bash
+git clone https://github.com/God-of-Bugs/task-4-react-quiz-app.git
+cd task-4-react-quiz-app
+npm install
+npm run dev
+```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+Build and test:
+```bash
+npm run lint
+npm run build
+```
 
-3. **Start local dev server:**
-   ```bash
-   npm run dev
-   ```
-
-4. **Lint and build for production:**
-   ```bash
-   npm run lint
-   npm run build
-   ```
-
-5. **Deploy to GitHub Pages:**
-   ```bash
-   npm run deploy
-   ```
+Deploy:
+```bash
+npm run deploy
+```
 
 ---
 
 ## 📜 License
-MIT License. Created as part of the Web & Software Engineering Internship program.
+MIT License.
